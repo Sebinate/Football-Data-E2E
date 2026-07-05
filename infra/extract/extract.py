@@ -6,7 +6,7 @@ from infra.logger.logger import logging
 def extract_api(path: str, api_key: str = None):
     try:
         if api_key:
-            header = {'x-apisport-key': api_key}
+            header = {'x-apisports-key': api_key}
 
         else:
             header = {}
@@ -31,8 +31,11 @@ def store_to_s3_bronze(data, bucket_name: str, key: str):
             Key=key,
             Body=json.dumps(data)
         )
-        logging.info('Successfully ')
+        logging.info('Successfully stored data to s3')
 
     except Exception as e:
         logging.error(f'Fatally errored in Loading data into S3 bucket')
         raise e
+    
+if __name__ == '__main__':
+    pass
