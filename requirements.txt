@@ -3,3 +3,5 @@ pandas
 numpy
 requests
 dotenv
+dbt-core
+dbt-snowflake

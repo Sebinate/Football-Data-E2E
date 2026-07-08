@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: football_api_source
+    database: FOOTBALL_DATA_WH
+    schema: BRONZE
+    tables:
+      - name: s3_raw_stage
+        description: "External stage pointing directly to JSON files inside AWS S3 bucket."

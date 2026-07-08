@@ -12,7 +12,11 @@ def extract_api(path: str, api_key: str = None):
             header = {}
 
         response = requests.get(path, headers=header)
-        data = response.json()
+        data = response.json().get('response')
+
+        if not data:
+            logging.warning('API returned null')
+
         logging.info('Successfully requested data')
 
         return data
