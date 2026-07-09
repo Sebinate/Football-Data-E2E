@@ -5,5 +5,5 @@ sources:
     database: FOOTBALL_DATA_WH
     schema: BRONZE
     tables:
-      - name: s3_raw_stage
+      - name: S3_RAW_STAGE
         description: "External stage pointing directly to JSON files inside AWS S3 bucket."

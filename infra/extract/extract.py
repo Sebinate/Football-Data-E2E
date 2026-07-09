@@ -3,7 +3,7 @@ import json
 import boto3
 from infra.logger.logger import logging
 
-def extract_api(path: str, api_key: str = None):
+def extract_api(path: str, api_key: str = None, params: dict = {}):
     try:
         if api_key:
             header = {'x-apisports-key': api_key}
@@ -11,7 +11,7 @@ def extract_api(path: str, api_key: str = None):
         else:
             header = {}
 
-        response = requests.get(path, headers=header)
+        response = requests.get(path, headers=header, params = params)
         data = response.json().get('response')
 
         if not data:
