@@ -15,6 +15,6 @@ SELECT
     (json_payload:country:code)::CHAR(6) AS league_country_code,
     (json_payload:country:flag)::VARCHAR AS league_country_flag,
     REGEXP_SUBSTR(s3_file_path, 'load_date=([^/]+)', 1, 1, 'e')::DATE AS data_load_date,
-    CURRENT_TIMESTAMP() AS transformed_at
+    CURRENT_TIMESTAMP() AS loaded_at
 
 FROM league_source

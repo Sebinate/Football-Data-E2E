@@ -27,6 +27,6 @@ SELECT
     (json_payload:score:halftime:away)::INT AS fixture_away_halftime_score,
 
     REGEXP_SUBSTR(s3_file_path, 'load_date=([^/]+)', 1, 1, 'e')::DATE AS data_load_date,
-    CURRENT_TIMESTAMP() AS transformed_at
+    CURRENT_TIMESTAMP() AS loaded_at
 
 FROM fixtures_source

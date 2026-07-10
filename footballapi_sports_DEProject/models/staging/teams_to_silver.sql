@@ -11,6 +11,7 @@ SELECT
     (json_payload:team:name)::VARCHAR AS team_name,
     (json_payload:team:code)::CHAR(3) AS team_code,
     (json_payload:team:logo)::VARCHAR AS team_logo,
+    (json_payload:venue:id)::INT AS team_venue_id,
     (json_payload:venue:name)::VARCHAR AS team_venue_name,
     (json_payload:venue:address)::VARCHAR AS team_venue_address,
     (json_payload:venue:city)::VARCHAR AS team_city,
@@ -18,6 +19,6 @@ SELECT
     (json_payload:venue:surface)::VARCHAR AS team_surface,
 
     REGEXP_SUBSTR(s3_file_path, 'load_date=([^/]+)', 1, 1, 'e')::DATE AS data_load_date,
-    CURRENT_TIMESTAMP() AS transformed_at
+    CURRENT_TIMESTAMP() AS loaded_at
 
 FROM teams_source
