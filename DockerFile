@@ -1,0 +1,24 @@
+FROM apache/airflow:2.10.5-python3.11
+
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+USER airflow
+
+COPY requirements.txt /opt/airflow/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /opt/airflow/requirements.txt
+
+COPY --chown=airflow:root ./footballapi_sports_DEProject /opt/airflow/footballapi_sports_DEProject
+COPY --chown=airflow:root ./scripts /opt/airflow/scripts
+COPY --chown=airflow:root ./infra /opt/airflow/infra
+COPY --chown=airflow:root ./plugins /opt/airflow/plugins
+COPY --chown=airflow:root ./dags /opt/airflow/dags
+
+RUN git config --global --add safe.directory /opt/airflow/footballapi_sports_DEProject && \
+    cd /opt/airflow/footballapi_sports_DEProject && \
+    dbt deps --profile generic

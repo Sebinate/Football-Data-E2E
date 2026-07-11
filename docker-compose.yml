@@ -1,0 +1,77 @@
+x-airflow-common: &airflow-common
+  build: .
+  restart: always
+  environment:
+    - PYTHONPATH=/opt/airflow
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+    - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+    - SNOWFLAKE_USER=${SNOWFLAKE_USER}
+    - SNOWFLAKE_PASSWORD=${SNOWFLAKE_PASSWORD}
+    - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
+    - SNOWFLAKE_ROLE=${SNOWFLAKE_ROLE}
+    - FOOTBALL_API_KEY=${FOOTBALL_API_KEY}
+    - FOOTBALL_API_HOST=${FOOTBALL_API_HOST}
+  volumes:
+    - ./logs:/opt/airflow/logs
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    restart: "no"
+    command:
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username admin \
+          --firstname admin \
+          --lastname admin \
+          --role Admin \
+          --email admin@example.com \
+          --password admin
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:

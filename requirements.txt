@@ -2,6 +2,4 @@ boto3
 pandas
 numpy
 requests
-dotenv
-dbt-core
 dbt-snowflake
