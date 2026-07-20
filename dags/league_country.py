@@ -41,6 +41,11 @@ with DAG(
         bash_command='python /opt/airflow/scripts/league_runner.py' 
     )
     
+    validate_metadata = BashOperator(
+        task_id='validate_metadata',
+        bash_commands='python /opt/airflow/data_validation/runners'
+    )
+
     for season in seasons:
         extract_team = BashOperator(
             task_id=f'extract_team_{season}',

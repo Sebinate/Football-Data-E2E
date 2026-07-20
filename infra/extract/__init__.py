@@ -1,1 +1,1 @@
-from .extract import extract_api, store_to_s3_bronze
+from .extract import extract_api, store_to_s3_bronze, load_from_s3_bronze

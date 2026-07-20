@@ -18,6 +18,7 @@ COPY --chown=airflow:root ./scripts /opt/airflow/scripts
 COPY --chown=airflow:root ./infra /opt/airflow/infra
 COPY --chown=airflow:root ./plugins /opt/airflow/plugins
 COPY --chown=airflow:root ./dags /opt/airflow/dags
+COPY --chown=airflow:root ./data_validation /opt/airflow/data_validation
 
 RUN git config --global --add safe.directory /opt/airflow/footballapi_sports_DEProject && \
     cd /opt/airflow/footballapi_sports_DEProject && \
