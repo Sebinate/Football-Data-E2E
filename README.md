@@ -91,7 +91,7 @@ docker compose up -d --build
 - **Loading:** Data is persisted in Snowflake, under the Gold layer with a star schema design, optimized for fast joins
 
 ## Scheduling and Orchestration
-Apache Airflow is the choice tool for orchestration for this project. To run, head over to http://localhost:8080 (assuming that ```docker compose up -d --build``` has been ran) and trigger each dag manually first. The ```league_country``` will run Yearly (this dag handles the ingestion, and ), and the ```fixtures``` dag will run weekly.
+Apache Airflow is the choice tool for orchestration for this project. To run, head over to http://localhost:8080 (assuming that ```docker compose up -d --build``` has been ran) and trigger each dag manually first. The ```league_country``` will run Yearly (this dag handles the ingestion, transformation, and storage of metadata such as ```/leagues``` and ```/teams```), and the ```fixtures``` dag will run weekly (to match with the weekly fixture schedule of the English Premier League).
 
 ## Known Limitations
 The project is still not fully completed with the missing features:
