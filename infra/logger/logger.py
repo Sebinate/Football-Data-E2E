@@ -17,3 +17,12 @@ logging.basicConfig(
     format = "[ %(asctime)s ] %(lineno)d %(name)s - %(levelname)s - %(message)s",
     level = logging.INFO,
 )
+
+def log_result(result: dict):
+    if result["passed"]:
+        logging.info(f"[{result['suite']}] validation passed for {result['execution_date']}")
+    else:
+        logging.error(
+            f"[{result['suite']}] validation FAILED at stage '{result['stage']}' "
+            f"for {result['execution_date']}: {result['errors']}"
+        )
