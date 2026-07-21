@@ -1,27 +1,28 @@
-from infra.extract import load_from_s3_bronze
-from data_validation.expectations import validate_raw_shape, validate_kept_columns_fixture
-import datetime
+from infra.extract import store_to_s3_bronze
+from data_validation.expectations import validate_kept_columns_fixture, validate_helper
+from dotenv import load_dotenv
+import sys
+from datetime import datetime
+import os
 
-def validate_fixture(execution_date: str) -> dict:
-    data = load_from_s3_bronze(execution_date)
+def main():
+    load_dotenv()
 
-    shape_errors = validate_raw_shape(data)
-    if shape_errors:
-        return {
-            "suite": "fixtures_scores",
-            "execution_date": execution_date,
-            "passed": False,
-            "stage": "raw_shape",
-            "errors": shape_errors,
-            "timestamp": datetime.utcnow().isoformat(),
-        }
+    AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
 
-    ge_result = validate_kept_columns_fixture(data)
-    return {
-        "suite": "fixtures_scores",
-        "execution_date": execution_date,
-        "passed": ge_result.success,
-        "stage": "column_validation",
-        "errors": [] if ge_result.success else ge_result.to_json_dict()["results"],
-        "timestamp": datetime.utcnow().isoformat(),
-    }
+    if len(sys.argv) > 1:
+        season = sys.argv[1]
+    else:
+        season = "2022"
+
+    results = validate_helper(validator=validate_kept_columns_fixture,
+                    bucket_name=AWS_S3_BUCKET_NAME,
+                    target='fixture',
+                    execution_date=datetime.today().strftime("%Y-%m-%d"),
+                    season=season)
+    
+    # Add functionality here to store the data into _validation
+    store_to_s3_bronze(
+        results,
+
+    )

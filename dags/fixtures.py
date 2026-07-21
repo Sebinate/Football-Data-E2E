@@ -26,10 +26,21 @@ with DAG(
         bash_command='cd /opt/airflow/footballapi_sports_DEProject && dbt run --select +dim_fixture'
     )
     
+    validates = []
+
     for season in seasons:
         extract_fixture = BashOperator(
             task_id=f'extract_fixture_{season}',
             bash_command=f'python /opt/airflow/scripts/fixture_runner.py {season}'
         )
+
+        validate_fixture = BashOperator(
+            task_id=f'validate_fixture_{season}',
+            bash_command=f'python /opt/airflow/data_validation/runners/fact_runner.py {season}'
+        )
         
-        extract_fixture >> dim_fixture
+        extract_fixture >> validate_fixture
+
+        validates.append(validate_fixture)
+
+    validates >> dim_fixture
